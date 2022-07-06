@@ -34,7 +34,7 @@ public class TopicServiceTest {
         Resp result = topicService.process(
                 new Req("GET", "queue", "weather", "1")
         );
-        assertNull(result.text());
+        assertThat(result.text(), is(""));
     }
 
     @Test
