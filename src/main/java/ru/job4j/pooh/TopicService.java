@@ -15,29 +15,34 @@ public class TopicService implements Service {
 
     public static final String NOT_FOUND = "404";
 
+    public static final String  NOT_IMPLEMENTED = "501";
+
     @Override
     public Resp process(Req req) {
-        String text = null;
-        String status = null;
+        String text = "";
+        String status = NOT_IMPLEMENTED;
         if ("POST".equals(req.getHttpRequestType())) {
-            put(req);
             status = put(req) ? SUCCESSFUL_RESPONSE : NOT_FOUND;
         } else if ("GET".equals(req.getHttpRequestType())) {
             text = get(req);
-            status = text == null ? NO_CONTENT : SUCCESSFUL_RESPONSE;
+            if (text == null) {
+                status = NO_CONTENT;
+                text = "";
+            } else {
+                status = SUCCESSFUL_RESPONSE;
+            }
         }
         return new Resp(text, status);
     }
 
     private boolean put(Req req) {
+        boolean rsl = false;
         var queueMap = topics.get(req.getSourceName());
-        return Optional.ofNullable(queueMap)
-                        .flatMap(map ->
-                            map.values()
-                                    .stream()
-                                    .map(queue -> queue.add(req.getParam()))
-                                    .findAny()
-                        ).orElse(false);
+        if (queueMap != null) {
+            queueMap.forEachValue(1, v -> v.add(req.getParam()));
+            rsl = true;
+        }
+        return true;
     }
 
     private String get(Req req) {
