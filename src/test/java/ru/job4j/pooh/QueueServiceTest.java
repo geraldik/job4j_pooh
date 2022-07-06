@@ -27,6 +27,6 @@ public class QueueServiceTest {
         Resp result = queueService.process(
                 new Req("GET", "queue", "weather", null)
         );
-        assertNull(result.text());
+        assertThat(result.text(), is(""));
     }
 }
