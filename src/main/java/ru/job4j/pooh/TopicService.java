@@ -42,7 +42,7 @@ public class TopicService implements Service {
             queueMap.forEachValue(1, v -> v.add(req.getParam()));
             rsl = true;
         }
-        return true;
+        return rsl;
     }
 
     private String get(Req req) {
